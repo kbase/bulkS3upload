@@ -14,15 +14,15 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/minio/minio-go"
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 type CopyResult struct {
@@ -52,6 +52,7 @@ var secretAccessKey string
 var bucket string
 var timerInterval float64
 var debug bool
+var ssl bool
 
 var elapsed time.Duration
 var lineCount = 0
@@ -160,6 +161,7 @@ func readConfig() {
 	t, _ := strconv.ParseFloat(confDefaults["timerInterval"], 64)
 	pflag.Float64("timerInterval", t, "Numbers of seconds between status messages. Use zero or negative value to turn off status updates")
 	pflag.Bool("debug", false, "Output detailed information for debugging")
+	pflag.Bool("ssl", false, "Use ssl for endpoint connection")
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 	rootDir = viper.GetString("rootDir")
@@ -170,6 +172,7 @@ func readConfig() {
 	bucket = viper.GetString("bucket")
 	timerInterval = viper.GetFloat64("timerInterval")
 	debug = viper.GetBool("debug")
+	ssl = viper.GetBool("ssl")
 	if maxWorkers < 1 {
 		log.Fatalf("maxWorkers value bad: %d", maxWorkers)
 	}
@@ -214,7 +217,7 @@ func main() {
 		} else {
 			fmt.Printf(" %d", worker)
 		}
-		go copyWorker(bucket, endpoint, accessKeyID, secretAccessKey, false, files, nodeStats, &wg)
+		go copyWorker(bucket, endpoint, accessKeyID, secretAccessKey, ssl, files, nodeStats, &wg)
 	}
 	fmt.Printf("\n")
 
