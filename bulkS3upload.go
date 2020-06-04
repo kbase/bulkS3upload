@@ -14,6 +14,9 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/minio/minio-go"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"log"
 	"os"
 	"strconv"
