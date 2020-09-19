@@ -24,8 +24,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/spf13/pflag"
-	"github.com/spf13/viper"
 )
 
 type CopyResult struct {
