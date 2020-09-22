@@ -69,7 +69,10 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 
 	defer wg.Done()
 
-	minioClient, err := minio.New(url, accessID, secretKey, ssl)
+	minioClient, err := minio.New(url, &minio.Options{
+		Creds: credentials.NewStaticV4(accessID, secretKey, ""),
+		Secure: ssl,
+	})
 	if err != nil {
 		log.Fatalln(err)
 	}
