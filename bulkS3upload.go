@@ -14,6 +14,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"context"
 	"github.com/minio/minio-go"
 	"github.com/minio/minio-go/pkg/credentials"
 	"github.com/spf13/pflag"
@@ -68,6 +69,7 @@ var errorLines = 0
 // and then waits on a channel for file paths that should be copied into the endpoint/bucket
 func copyWorker(bucket string, url string, accessID string, secretKey string, ssl bool, files <-chan string, nodeStats chan<- CopyResult, wg *sync.WaitGroup) {
 
+	ctx := context.Background()
 	defer wg.Done()
 
 	minioClient, err := minio.New(url, &minio.Options{
@@ -82,7 +84,7 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		stringArray := strings.Split(filePath,"/")
 		objectPath := stringArray[0] + "/" + stringArray[1] + "/" + stringArray[2] + "/" + stringArray[3]
 		fullPath := rootDir + filePath
-		bytes, err := minioClient.FPutObject(bucket, objectPath, fullPath, minio.PutObjectOptions{})
+		bytes, err := minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
 		if err != nil {
 			log.Printf(err.Error())
 		}
