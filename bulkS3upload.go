@@ -88,7 +88,7 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		if err != nil {
 			log.Printf(err.Error())
 		}
-		nodeStats <- CopyResult{path: filePath, bytes: bytes, err: err}
+		nodeStats <- CopyResult{path: filePath, bytes: 0, err: err}
 		count++
 	}
 }
