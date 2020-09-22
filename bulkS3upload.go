@@ -32,6 +32,7 @@ type CopyResult struct {
 	path  string
 	bytes int64
 	err   error
+	etag  string
 }
 
 // Configuration defaults for location of file and default settings
@@ -88,8 +89,8 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		if err != nil {
 			log.Printf(err.Error())
 		}
-		log.Printf("ETag: %s VersionID: %s", uploadInfo.ETag,uploadInfo.VersionID)
-		nodeStats <- CopyResult{path: filePath, bytes: 0, err: err}
+//		log.Printf("ETag: %s VersionID: %s", uploadInfo.ETag,uploadInfo.VersionID)
+		nodeStats <- CopyResult{path: filePath, bytes: 0, err: err, etag: uploadInfo.ETag}
 		count++
 	}
 }
