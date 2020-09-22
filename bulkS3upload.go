@@ -15,6 +15,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/minio/minio-go"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 	"log"
