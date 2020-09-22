@@ -84,10 +84,11 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		stringArray := strings.Split(filePath,"/")
 		objectPath := stringArray[0] + "/" + stringArray[1] + "/" + stringArray[2] + "/" + stringArray[3]
 		fullPath := rootDir + filePath
-		bytes, err := minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
+		uploadInfo, err := minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
 		if err != nil {
 			log.Printf(err.Error())
 		}
+		log.Printf(uploadInfo)
 		nodeStats <- CopyResult{path: filePath, bytes: 0, err: err}
 		count++
 	}
