@@ -84,10 +84,13 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		stringArray := strings.Split(filePath,"/")
 		objectPath := stringArray[0] + "/" + stringArray[1] + "/" + stringArray[2] + "/" + stringArray[3]
 		fullPath := rootDir + filePath
-		fileinfo, _ := os.Stat(fullPath)
-		_, err = minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
-		if err != nil {
-			log.Printf(err.Error())
+		fileinfo, statErr := os.Stat(fullPath)
+		if statErr != nil {
+			log.Printf("error statting file %s",fullPath)
+		}
+		_, minioErr := minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
+		if minioErr != nil {
+			log.Printf(minioErr.Error())
 		}
 		nodeStats <- CopyResult{path: filePath, bytes: fileinfo.Size(), err: err}
 		count++
