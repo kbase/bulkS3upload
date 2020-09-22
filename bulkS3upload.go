@@ -85,11 +85,11 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 		objectPath := stringArray[0] + "/" + stringArray[1] + "/" + stringArray[2] + "/" + stringArray[3]
 		fullPath := rootDir + filePath
 		fileinfo, statErr := os.Stat(fullPath)
+		fileSize := 0
 		if statErr != nil {
 			log.Printf("error statting file %s",fullPath)
-			fileSize := 0
 		} else {
-			fileSize := fileinfo.Size()
+			fileSize = fileinfo.Size()
 		}
 		
 		_, minioErr := minioClient.FPutObject(ctx, bucket, objectPath, fullPath, minio.PutObjectOptions{})
