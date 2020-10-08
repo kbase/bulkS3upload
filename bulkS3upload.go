@@ -25,7 +25,8 @@ import (
 	"strings"
 	"sync"
 	"time"
-
+        "net/http"
+	"crypto/tls"
 )
 
 type CopyResult struct {
@@ -56,6 +57,7 @@ var bucket string
 var timerInterval float64
 var debug bool
 var ssl bool
+var sslSkipVerify bool
 
 var elapsed time.Duration
 var lineCount = 0
@@ -79,6 +81,11 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 	if err != nil {
 		log.Fatalln(err)
 	}
+
+	minioClient.SetCustomTransport(&http.Transport{
+                TLSClientConfig: &tls.Config{InsecureSkipVerify: sslSkipVerify},
+        })
+
 	count := 0
 	for filePath := range files {
 		stringArray := strings.Split(filePath,"/")
@@ -182,6 +189,7 @@ func readConfig() {
 	pflag.Float64("timerInterval", t, "Numbers of seconds between status messages. Use zero or negative value to turn off status updates")
 	pflag.Bool("debug", false, "Output detailed information for debugging")
 	pflag.Bool("ssl", false, "Use ssl for endpoint connection")
+	pflag.Bool("sslSkipVerify", false, "Skip ssl certificate verification (e.g. for self-signed certs)")
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 	rootDir = viper.GetString("rootDir")
@@ -193,6 +201,7 @@ func readConfig() {
 	timerInterval = viper.GetFloat64("timerInterval")
 	debug = viper.GetBool("debug")
 	ssl = viper.GetBool("ssl")
+	sslSkipVerify = viper.GetBool("sslSkipVerify")
 	if maxWorkers < 1 {
 		log.Fatalf("maxWorkers value bad: %d", maxWorkers)
 	}
