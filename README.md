@@ -24,6 +24,8 @@ secretAccessKey: [S3 Secret Key]
 bucket: workspace
 timerInterval: 15.0
 debug: false
+ssl: true
+sslSkipVerify: false
 ~~~
 
 The filelist is a list of filepaths (one file per line), each path in filelist is copied to the same path in the S3 service.
