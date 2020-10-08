@@ -77,14 +77,11 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 	minioClient, err := minio.New(url, &minio.Options{
 		Creds: credentials.NewStaticV4(accessID, secretKey, ""),
 		Secure: ssl,
+		Transport: &http.Transport{TLSClientConfig: &tls.Config{InsecureSkipVerify: sslSkipVerify}},
 	})
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	minioClient.SetCustomTransport(&http.Transport{
-        	TLSClientConfig: &tls.Config{InsecureSkipVerify: sslSkipVerify},
-        })
 
 	count := 0
 	for filePath := range files {
