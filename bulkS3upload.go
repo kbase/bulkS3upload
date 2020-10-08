@@ -83,7 +83,7 @@ func copyWorker(bucket string, url string, accessID string, secretKey string, ss
 	}
 
 	minioClient.SetCustomTransport(&http.Transport{
-                TLSClientConfig: &tls.Config{InsecureSkipVerify: sslSkipVerify},
+        	TLSClientConfig: &tls.Config{InsecureSkipVerify: sslSkipVerify},
         })
 
 	count := 0
